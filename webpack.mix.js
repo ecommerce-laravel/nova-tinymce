@@ -13,7 +13,7 @@ mix
   .webpackConfig({
     externals: {
       vue: 'Vue',
-        'laravel-nova': 'LaravelNova',
+      'laravel-nova': 'LaravelNova',
       }
     })
     .nova('emilianotisato/nova-tinymce')

@@ -1,10 +1,10 @@
 <template>
-  <DefaultField :field="currentField" :full-width-content="true" :show-help-text="showHelpText">
+  <DefaultField :field="field" :full-width-content="true" :show-help-text="showHelpText">
     <template #field>
-      <editor :id="dynamicID"
+      <editor :id="field.id"
               v-model="value"
               :class="errorClasses"
-              :placeholder="currentField.name"
+              :placeholder="field.name"
               :init="options"
       ></editor>
 
@@ -28,12 +28,9 @@ export default {
 
   data() {
     return {
-      observer: null
+      observer: null,
+      tempID: null
     }
-  },
-
-  mounted() {
-    this.initializeObserver();
   },
 
   computed: {
@@ -53,21 +50,6 @@ export default {
 
       return options
     },
-
-    isTranslatable() {
-      // Check if the field is translatable
-      return this.currentField.translatable && this.currentField.translatable.active;
-    },
-
-    dynamicID() {
-      // Check if the field is translatable
-      if (this.currentField.translatable) {
-        return this.currentField.id.includes('.')
-            ? this.currentField.id
-            : `${this.currentField.id || this.currentField.attribute}.${this.activeLocale}`;
-      }
-      return this.currentField.id || this.currentField.attribute;
-    }
   },
 
   methods: {
@@ -109,33 +91,6 @@ export default {
         }
       });
     },
-
-    initializeObserver() {
-      this.observer = new MutationObserver((mutations) => {
-        mutations.forEach(mutation => {
-          if (mutation.target.nodeName === 'TEXTAREA' && mutation.attributeName === 'id') {
-            this.initializeTinyMCE(mutation.target.id);
-          }
-        });
-      });
-
-      this.observer.observe(this.$el, {
-        attributes: true,
-        childList: true,
-        subtree: true
-      });
-    },
-
-    initializeTinyMCE(id) {
-      if (!window.tinymce.get(id)) {
-        const tinymceOptions = {
-          selector: `#${id}`,
-          ...this.options
-          // you can add or overwrite other options here if necessary
-        };
-        window.tinymce.init(tinymceOptions);
-      }
-    }
   },
 
   beforeDestroy() {

@@ -495,12 +495,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var laravel_nova__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-nova */ "laravel-nova");
 /* harmony import */ var laravel_nova__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(laravel_nova__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tinymce/tinymce-vue */ "./node_modules/@tinymce/tinymce-vue/lib/es2015/main/ts/index.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -511,11 +505,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
   props: ['resourceName', 'resourceId', 'field'],
   data: function data() {
     return {
-      observer: null
+      observer: null,
+      tempID: null
     };
-  },
-  mounted: function mounted() {
-    this.initializeObserver();
   },
   computed: {
     options: function options() {
@@ -530,17 +522,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         }
       }
       return options;
-    },
-    isTranslatable: function isTranslatable() {
-      // Check if the field is translatable
-      return this.currentField.translatable && this.currentField.translatable.active;
-    },
-    dynamicID: function dynamicID() {
-      // Check if the field is translatable
-      if (this.currentField.translatable) {
-        return this.currentField.id.includes('.') ? this.currentField.id : "".concat(this.currentField.id || this.currentField.attribute, ".").concat(this.activeLocale);
-      }
-      return this.currentField.id || this.currentField.attribute;
     }
   },
   methods: {
@@ -576,29 +557,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           callback(message.content);
         }
       });
-    },
-    initializeObserver: function initializeObserver() {
-      var _this = this;
-      this.observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          if (mutation.target.nodeName === 'TEXTAREA' && mutation.attributeName === 'id') {
-            _this.initializeTinyMCE(mutation.target.id);
-          }
-        });
-      });
-      this.observer.observe(this.$el, {
-        attributes: true,
-        childList: true,
-        subtree: true
-      });
-    },
-    initializeTinyMCE: function initializeTinyMCE(id) {
-      if (!window.tinymce.get(id)) {
-        var tinymceOptions = _objectSpread({
-          selector: "#".concat(id)
-        }, this.options);
-        window.tinymce.init(tinymceOptions);
-      }
     }
   },
   beforeDestroy: function beforeDestroy() {
@@ -691,19 +649,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_editor = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("editor");
   var _component_DefaultField = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("DefaultField");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_DefaultField, {
-    field: _ctx.currentField,
+    field: $props.field,
     "full-width-content": true,
     "show-help-text": _ctx.showHelpText
   }, {
     field: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_editor, {
-        id: $options.dynamicID,
+        id: $props.field.id,
         modelValue: _ctx.value,
         "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
           return _ctx.value = $event;
         }),
         "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(_ctx.errorClasses),
-        placeholder: _ctx.currentField.name,
+        placeholder: $props.field.name,
         init: $options.options
       }, null, 8 /* PROPS */, ["id", "modelValue", "class", "placeholder", "init"]), _ctx.hasError ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.firstError), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
     }),
